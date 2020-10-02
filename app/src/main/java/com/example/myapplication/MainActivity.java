@@ -2,8 +2,10 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,18 +38,19 @@ public class MainActivity extends AppCompatActivity {
     StringRequest stringRequest;
 
     EditText etLastname, etFirstname;
-    Button btnSave;
+    Button btnSave, btnDisplayPersons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        NukeSSLCerts.nuke();
+        NukeSSLCerts.Nuke.nuke();
 
         etLastname = findViewById(R.id.etLastname);
         etFirstname = findViewById(R.id.etFirstname);
         btnSave = findViewById(R.id.btnSave);
+        btnDisplayPersons = findViewById(R.id.btnDisplayPersons);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +64,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btnDisplayPersons.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadDisplayPersons();
+            }
+        });
+    }
+
+    private void loadDisplayPersons() {
+        startActivity(new Intent(this, DisplayPersons.class));
     }
 
     private void save() {
@@ -102,37 +116,37 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    public static class NukeSSLCerts {
-        protected static final String TAG = "NukeSSLCerts";
-
-        public static void nuke() {
-            try {
-                TrustManager[] trustAllCerts = new TrustManager[] {
-                        new X509TrustManager() {
-                            public X509Certificate[] getAcceptedIssuers() {
-                                X509Certificate[] myTrustedAnchors = new X509Certificate[0];
-                                return myTrustedAnchors;
-                            }
-
-                            @Override
-                            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
-
-                            @Override
-                            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-                        }
-                };
-
-                SSLContext sc = SSLContext.getInstance("SSL");
-                sc.init(null, trustAllCerts, new SecureRandom());
-                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-                HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String arg0, SSLSession arg1) {
-                        return true;
-                    }
-                });
-            } catch (Exception e) {
-            }
-        }
-    }
+//    public static class NukeSSLCerts {
+//        protected static final String TAG = "NukeSSLCerts";
+//
+//        public static void nuke() {
+//            try {
+//                TrustManager[] trustAllCerts = new TrustManager[] {
+//                        new X509TrustManager() {
+//                            public X509Certificate[] getAcceptedIssuers() {
+//                                X509Certificate[] myTrustedAnchors = new X509Certificate[0];
+//                                return myTrustedAnchors;
+//                            }
+//
+//                            @Override
+//                            public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+//
+//                            @Override
+//                            public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+//                        }
+//                };
+//
+//                SSLContext sc = SSLContext.getInstance("SSL");
+//                sc.init(null, trustAllCerts, new SecureRandom());
+//                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+//                HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+//                    @Override
+//                    public boolean verify(String arg0, SSLSession arg1) {
+//                        return true;
+//                    }
+//                });
+//            } catch (Exception e) {
+//            }
+//        }
+//    }
 }
