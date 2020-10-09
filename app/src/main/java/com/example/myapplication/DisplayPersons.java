@@ -26,29 +26,25 @@ public class DisplayPersons extends AppCompatActivity {
     RequestQueue requestQueue;
     StringRequest stringRequest;
 
-    ArrayList<Person> personList;
     ListView lvPersons;
-    String[] strPersons;
+    ArrayList<Person> personList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_persons);
         NukeSSLCerts.Nuke.nuke();
-        lvPersons = findViewById(R.id.lvPersons);
+        personList = new ArrayList<>();
         loadPersons();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_expandable_list_item_1,
-                strPersons);
-        lvPersons.setAdapter(adapter);
+        lvPersons = findViewById(R.id.lvPersons);
+
+
 
 
     }
 
     private void loadPersons(){
-        personList = new ArrayList<>();
-
         requestQueue = Volley.newRequestQueue(this);
         stringRequest = new StringRequest(Request.Method.GET, "https://192.168.254.108/android_connect/displaypersons.php",
                 new Response.Listener<String>() {
@@ -57,22 +53,22 @@ public class DisplayPersons extends AppCompatActivity {
                         try {
                             JSONObject obj = new JSONObject(response);
                             JSONArray jArray = obj.getJSONArray("persons");
-                            strPersons = new String[jArray.length()];
+                            Log.v("ARRAY LENGTH: ", String.valueOf(jArray.length()));
+
                             for(int i = 0; i < jArray.length(); i++){
                                 JSONObject jObject = jArray.getJSONObject(i);
                                 personList.add(
                                         new Person(
                                                 jObject.getString("lastname"),
                                                 jObject.getString("firstname")
-                                                )
-                                );
+                                        ));
 
-                                strPersons[i] = jObject.getString("lastname") + ", " +
-                                        jObject.getString("firstname");
-                                Log.v("data", personList.get(i).getLastname());
+                                Log.v("DATA: ", "[" + String.valueOf(i) + "]" +personList.get(i).getLastname());
                             }
                             Log.v("SIZE: ", String.valueOf(personList.size()));
-
+                            ListAdapter adapter = new PersonAdapter(getApplicationContext(), personList);
+                            lvPersons.setAdapter(adapter);
+                            Log.v("SIZE: ", String.valueOf(personList.size()));
 
                         } catch (JSONException e) {
                             e.printStackTrace();
