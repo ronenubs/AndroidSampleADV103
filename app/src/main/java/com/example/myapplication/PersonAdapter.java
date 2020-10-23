@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class PersonAdapter extends BaseAdapter {
@@ -48,13 +50,17 @@ public class PersonAdapter extends BaseAdapter {
        if(convertView == null){
            convertView = layoutInflater.inflate(R.layout.person_display, null);
            holder = new ViewHolder();
+
+           holder.tvPersonID = convertView.findViewById(R.id.tvPersonID);
            holder.tvLastname = convertView.findViewById(R.id.tvLastname);
            holder.tvFirstname = convertView.findViewById(R.id.tvFirstname);
+
            convertView.setTag(holder);
        } else {
            holder = (ViewHolder) convertView.getTag();
        }
 
+        holder.tvPersonID.setText(String.valueOf(personsList.get(position).getPersonID()));
         holder.tvLastname.setText(personsList.get(position).getLastname());
         holder.tvFirstname.setText(personsList.get(position).getFirstname());
 
@@ -64,5 +70,6 @@ public class PersonAdapter extends BaseAdapter {
     private static class ViewHolder{
         TextView tvLastname;
         TextView tvFirstname;
+        TextView tvPersonID;
     }
 }
